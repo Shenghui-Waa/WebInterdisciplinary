@@ -137,7 +137,7 @@
 
                 filter: drop-shadow(0 0 4px rgb(10, 255, 10));
             }
-
+			
             .nextImage{
                 left: 900px;
                 bottom: 25px;
@@ -150,8 +150,8 @@
                 cursor: pointer;
                 position: absolute;
             }
+			
             
-
         </style>
         <script type="text/javascript">
 
@@ -161,13 +161,11 @@
                 CPpicture.style.display="block";
             }
 
-
-
             function changePage(i){
                 if(i=="1"){
                     window.location.replace("");
                 }else if(i=="-1"){
-                    window.location.replace("");
+                    window.location.replace("PageSeven.html");
                 }
             }
         </script>
@@ -209,15 +207,12 @@
                                     <div class="paintColor" data-index="6" style="background-color: #53493A;"  onclick="selectColor(event)"></div>
                                 </div>
                             </div>
-
                         </div>
-
                     </div>
                     
                     <img class="nextImage" src="img/ModelPageImages/RightBT.png"  onclick="changePage(1)"/>
                     <img class="lastImage" src="img/ModelPageImages/LeftBT.png"  onclick="changePage(-1)"/>
                 </div>
-                
             </div>
 
             <img class="rightBook" src="img/ModelPageImages/RightFrame.png" />
