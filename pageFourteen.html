@@ -311,6 +311,7 @@
         </style>
         <script type="text/javascript">
             let leafNum = 0;
+			var res = null;
             function createLeaf(){
                 const leafLine = document.querySelector(".leafLine");
                 const leafLineDiv = document.querySelector(".leafLineDiv");
@@ -351,9 +352,14 @@
                 }
 
                 leafNum++;
-                setTimeout(() =>{
-                    createLeaf();
-                },500)
+				if (leafNum < 44) {
+					res = () =>{
+						createLeaf();
+					};
+					setTimeout(res ,500);
+				} else {
+					clearTimeout(res);
+				}
             }
             
 
@@ -583,9 +589,7 @@
                     TheConstPuImageSon.style.transform = ''; 
                     // 重置偏移量，避免下次拖拽受影响
                     xOffset = 0;
-                    yOffset = 0;
-
-                    
+                    yOffset = 0;  
                 } 
             }
 
