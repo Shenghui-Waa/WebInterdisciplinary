@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新第7页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            font-family: "微软雅黑", "宋体", serif;
+        }
+
+        /* 背景图容器：缓慢渐显 */
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("Images/PageFifteenImages/background6.png") no-repeat center center;
+            background-size: 95% auto;
+            opacity: 0;
+            transition: opacity 4s ease;
+            z-index: 1;
+        }
+
+        /* 背景渐显触发类 */
+        .bg-container.show {
+            opacity: 1;
+        }
+
+        /* 右上角音乐图标 */
+        .music-icon {
+            position: fixed;
+            top: 3vw;
+            right: 6vh;
+            width: 12vw;
+            height: 12vh;
+            background: url("Images/PageFifteenImages/music-icon.png") no-repeat center center;
+            background-size: contain;
+            cursor: pointer;
+            z-index: 3;
+            transition: transform 0.3s ease;
+        }
+
+        .music-icon:hover {
+            transform: scale(1.1);
+        }
+
+        #RightDiv:hover {
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+
+        /* 文字框样式 */
+        .text-box {
+            position: fixed;
+            bottom: 15vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            max-width: 900px;
+            padding: 25px;
+            font-size: 19px;
+            line-height: 1.8;
+            color: #4a3b28;
+            z-index: 2;
+        }
+
+        .textFrame {
+            position: fixed;
+            bottom: 3vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            color: #4a3b28;
+            z-index: 2;
+            opacity: 0.8;
+        }
+
+        .text-content {
+            white-space: pre-line;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 弹框内容框 */
+        .modal-content {
+            background-image: url("Images/ModelPageImages/downBG.png");
+            background-size: cover;
+            padding: 30px;
+            border-radius: 8px;
+            width: 1200px;
+            height: 675.6px;
+            max-width: 90%;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 100px;
+            cursor: pointer;
+            color: #aaa;
+            z-index: 10;
+        }
+
+        .close-btn:hover {
+            color: #000;
+        }
+
+        /* 第二个模态框样式 */
+        .reward-modal2-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .reward-modal2-content {
+            position: relative;
+            background: #f5f0e8;
+            border: 2px solid #8a735a;
+            border-radius: 8px;
+            padding: 40px 60px;
+            max-width: 600px;
+            text-align: center;
+            font-family: "SimSun", "宋体", serif;
+        }
+
+        .reward-modal2-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #8a735a;
+        }
+
+        .reward-modal2-close:hover {
+            color: #5a4630;
+        }
+
+        .reward-modal2-title {
+            font-size: 28px;
+            color: #5a4630;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .reward-modal2-img {
+            width: 300px;
+            height: auto;
+            margin-bottom: 25px;
+        }
+
+        .reward-modal2-desc {
+            font-size: 16px;
+            color: #5a4630;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .reward-modal2-next-btn {
+            font-size: 16px;
+            color: #5a4630;
+            cursor: pointer;
+            text-align: right;
+            margin-right: 10px;
+        }
+
+        .reward-modal2-arrow {
+            font-size: 18px;
+            margin-left: 5px;
+        }
+
+        .reward-modal2-next-btn:hover {
+            color: #8a735a;
+        }
+
+        /* 页面内容样式 */
+        .pageEightDaDiv {
+            width: 1000px;
+            height: 562.5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .pageEightDiv1 {
+            width: 63%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .pageEightDiv2 {
+            background-color: rgba(218, 218, 218, 0.397);
+            width: 37%;
+            height: 96%;
+            border-left: 1px solid black;
+        }
+
+        .characterPhoto {
+            width: 400px;
+            height: auto;
+            position: absolute;
+            transform: translate(-50%, 20px);
+        }
+
+        .characterPhotoTopDiv {
+            width: 100%;
+            height: 53%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .characterPhotoBottomDiv {
+            width: 100%;
+            height: 47%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .paintBox {
+            width: 90%;
+            height: 67%;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .paintColor {
+            flex-shrink: 0;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 1px solid #000000;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .paintColor:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 4px rgb(10, 255, 10));
+        }
+
+        .flowerCoin {
+            position: absolute;
+            z-index: 100;
+            width: 50px;
+            left: -100px;
+            aspect-ratio: 1;
+            animation: flowerRotate 3s linear infinite forwards;
+        }
+
+        @keyframes flowerRotate {
+            0% { opacity: 0.8; transform: translate(0,0) scale(0.9) rotateZ(0deg); }
+            50% { opacity: 1; transform: translate(0,0) scale(1) rotateZ(180deg); }
+            100% { opacity: 0.8; transform: translate(0,0) scale(0.9) rotateZ(360deg); }
+        }
+    </style>
+</head>
+
+<body>
+
+    <img class="flowerCoin" id="flower1" src="Images/flower.png" alt="花朵">
+    <img class="flowerCoin" id="flower2" src="Images/flower.png" alt="花朵">
+    <img class="flowerCoin" id="flower3" src="Images/flower.png" alt="花朵">
+    <img class="flowerCoin" id="flower4" src="Images/flower.png" alt="花朵">
+    <img class="flowerCoin" id="flower5" src="Images/flower.png" alt="花朵">
+    <img class="flowerCoin" id="flower6" src="Images/flower.png" alt="花朵">
+
+
+    <!-- 背景图容器 -->
+    <div class="bg-container" id="bgContainer">
+        <!-- 右上角音乐图标 -->
+        <div class="music-icon" id="musicIcon" ></div>
+
+        <!-- 隐藏的音频播放器（播放本地音乐） -->
+        <audio id="audioPlayer" src="Auidos/剧情音乐.MP3" loop></audio> <!-- 替换为你的本地音乐路径 -->
+
+        <!-- 文字显示框 -->
+        <img class="textFrame" src="Images/PageFifteenImages/texFrame.png" />
+        <div class="text-box">
+            <div class="text-content" id="textContent"></div>
+
+
+
+            <img id="RightDiv" src="Images\ModelPageImages\RightBT.png"
+                style="position: absolute; bottom: 5%; right: 5%;display: none; " onclick="openPopup()" />
+        </div>
+
+
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
+        <div class="modal-content">
+            <!-- 关闭按钮 × -->
+            <span class="close-btn" onclick="closePopup()">&times;</span>
+
+            <div class="pageEightDaDiv">
+                <div class="pageEightDiv1">
+                    <div class="characterPhotoMideunDiv">
+                        <img class="characterPhoto" src="Images/PageEightImages/PhotoCon.png" />
+                        <img class="characterPhoto" id="CP_1" src="Images/PageEightImages/characterPhoto_1.png"
+                            style="display: none;" />
+                        <img class="characterPhoto" id="CP_2" src="Images/PageEightImages/characterPhoto_2.png"
+                            style="display: none;" />
+                        <img class="characterPhoto" id="CP_3" src="Images/PageEightImages/characterPhoto_3.png"
+                            style="display: none;" />
+                        <img class="characterPhoto" id="CP_4" src="Images/PageEightImages/characterPhoto_4.png"
+                            style="display: none;" />
+                        <img class="characterPhoto" id="CP_5" src="Images/PageEightImages/characterPhoto_5.png"
+                            style="display: none;" />
+                        <img class="characterPhoto" id="CP_6" src="Images/PageEightImages/characterPhoto_6.png"
+                            style="display: none;" />
+
+                    </div>
+                </div>
+
+                <div class="pageEightDiv2">
+                    <div class="characterPhotoTopDiv">
+                        <img class="characterPhoto" src="Images/PageEightImages/PhotoMan.png"
+                            style="width: 17% ;transform:translate(0,20px)" />
+                    </div>
+                    <div class="characterPhotoBottomDiv">
+                        <div class="paintBox">
+                            <div class="paintColor" data-index="1" style="background-color: #DADAB2;"
+                                onclick="selectColor(event,this)"></div>
+                            <div class="paintColor" data-index="2" style="background-color: #FFF3CC;"
+                                onclick="selectColor(event,this)"></div>
+                            <div class="paintColor" data-index="3" style="background-color: #FFE5C4;"
+                                onclick="selectColor(event,this)"></div>
+                            <div class="paintColor" data-index="4" style="background-color: #EC9778;"
+                                onclick="selectColor(event,this)"></div>
+                            <div class="paintColor" data-index="5" style="background-color: #9CCAB6;"
+                                onclick="selectColor(event,this)"></div>
+                            <div class="paintColor" data-index="6" style="background-color: #53493A;"
+                                onclick="selectColor(event,this)"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <img id="RightDiv2" src="Images\ModelPageImages\RightBT.png"
+                    style="position: absolute; bottom: 5%; right: 5%;display: none; " onclick="openPopup2()" />
+
+            </div>
+        </div>
+        <!-- 第二个模态框 -->
+        <!-- 第二个模态框（独立样式，无重复） -->
+        <div class="reward-modal2-overlay" id="modalOverlay2" onclick="closeModalOnOverlay2(event)">
+            <div class="reward-modal2-content">
+                <!-- 关闭按钮 × -->
+                <span class="reward-modal2-close" onclick="closePopup2()">&times;</span>
+
+                <!-- 标题 -->
+                <div class="reward-modal2-title">获得奖励</div>
+
+                <!-- 核心图片（路径保持不变） -->
+                <img class="reward-modal2-img" src="Images/shouchuan/A2.png" />
+
+                <!-- 说明文字 -->
+                <div class="reward-modal2-desc">
+                    获得小梳子一个，集齐五个奖励可兑换实物，线下到昆曲博物馆参观向工作人员出示即可。
+                </div>
+
+                <!-- 下一页按钮 -->
+                <div class="reward-modal2-next-btn" onclick="handleNextPage2()">
+                    点击下一页 <span class="reward-modal2-arrow">▶</span>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // ========== 1. 背景图缓慢渐显 ==========
+            const bgContainer = document.getElementById('bgContainer');
+            // 页面加载完成后触发背景渐显
+            window.addEventListener('load', () => {
+                bgContainer.classList.add('show');
+                // 背景开始渐显的同时，启动文字逐字显示
+                startTypewriter();
+            });
+
+            // ========== 2. 文字逐字出现 ==========
+            const textContent = document.getElementById('textContent');
+            // 要显示的文本内容（可直接替换）
+            const targetText = `杜丽娘被花神扔的花片惊醒，梦醒之后，怅然若失。此后，杜丽娘常趁丫鬟春香不在，悄悄去花园寻找梦中之人，寻梦不到，伤心自怜。在相思中，杜丽娘日渐消瘦，身子虚弱，她害怕自己去世后，再无人知晓西蜀杜丽娘的美貌，便为自己画下自画像。`;
+            let charIndex = 0; // 文字索引
+            const typeSpeed = 120; // 每个字的显示间隔（毫秒），数值越小越快
+
+            // 逐字显示核心函数
+            function startTypewriter() {
+                if (charIndex < targetText.length) {
+                    // 追加当前字符到文本容器
+                    textContent.textContent += targetText.charAt(charIndex);
+                    charIndex++;
+                    // 递归调用，实现逐字效果
+                    setTimeout(startTypewriter, typeSpeed);
+                } else {
+                    let rightDiv = document.getElementById('RightDiv');
+                    rightDiv.style.display = 'block';
+                }
+
+            }
+
+            // ========== 3. 右上角图标点击播放/暂停音乐 ==========
+            const musicIcon = document.getElementById('musicIcon');
+            const audioPlayer = document.getElementById('audioPlayer');
+            let isMusicPlaying = false; // 音乐播放状态标记
+
+            musicIcon.addEventListener('click', () => {
+                if (isMusicPlaying) {
+                    audioPlayer.pause(); // 暂停音乐
+                    // 可选：暂停时切换图标（替换为暂停图标路径）
+                    // musicIcon.style.backgroundImage = "url('music-icon.png')";
+                } else {
+                    audioPlayer.play(); // 播放音乐
+                    // 可选：播放时切换图标（替换为播放中图标路径）
+                    // musicIcon.style.backgroundImage = "url('music-playing-icon.png')";
+                }
+                isMusicPlaying = !isMusicPlaying; // 切换状态
+            });
+
+            const modalOverlay = document.getElementById('modalOverlay');
+
+            function openPopup() {
+                modalOverlay.style.display = 'flex';
+
+            }
+
+            function closePopup() {
+                modalOverlay.style.display = 'none';
+            }
+
+            function closeModalOnOverlay(event) {
+                if (event.target === modalOverlay) {
+                    closePopup();
+                }
+            }
+
+
+        </script>
+        <script>
+            function openPopup2() {
+                document.getElementById("modalOverlay2").style.display = 'flex';
+
+            }
+            // 关闭模态框2的函数（如果已有可保留）
+            function closePopup2() {
+                document.getElementById("modalOverlay2").style.display = "none";
+            }
+
+            // 点击遮罩层关闭模态框2（如果已有可保留）
+            function closeModalOnOverlay2(event) {
+                if (event.target === document.getElementById("modalOverlay2")) {
+                    closePopup2();
+                }
+            }
+
+            // 下一页按钮逻辑（可根据你的业务需求修改）
+            function handleNextPage2() {
+                // 这里可以添加下一页的逻辑，比如跳转到新页面/关闭模态框/显示新内容等
+                window.location.href = "newPageEight.html";
+                // 示例：关闭当前模态框
+                closePopup2();
+            }
+        </script>
+        <script type="text/javascript">
+
+            function init() {
+                const flowers = document.getElementsByClassName("flowerCoin");
+                const winWid = window.innerWidth;
+                const winHeight = window.innerHeight;
+                const speeds = []; //下落速度
+
+                // 初始化花朵位置和速度
+                for (let i = 0; i < flowers.length; i++) {
+                    speeds.push(Math.random() * 3 + 2);
+                    resetFlower(flowers[i]);
+                }
+
+                // 重置位置
+                function resetFlower(flower) {
+                    flower.style.width = `${25 + 25 * Math.random()}px`;
+                    flower.style.left = `${Math.random() * winWid}px`;
+                    flower.style.top = `-${Math.random() * 100 + 50}px`;
+                }
+
+                // 下落动画
+                function moveFlowers() {
+                    for (let i = 0; i < flowers.length; i++) {
+                        const flower = flowers[i];
+                        const currentTop = parseFloat(flower.style.top);
+                        flower.style.top = `${currentTop + speeds[i]}px`;
+
+                        // 超出屏幕重置
+                        if (currentTop > winHeight + 50) {
+                            resetFlower(flower);
+                        }
+                    }
+                    requestAnimationFrame(moveFlowers);
+                }
+
+                // 启动动画
+                moveFlowers();
+            }
+
+
+            const colorArr = ["#DADAB2", "#FFF3CC", "#FFE5C4", "#EC9778", "#9CCAB6", "#53493A"]
+            let currentNum = 0;
+
+            function selectColor(e, paintColor) {
+                let a = e.currentTarget.dataset.index;
+                const CPpicture = document.getElementById(`CP_${a}`);
+                if (paintColor.style.backgroundColor === "rgb(214, 214, 214)") {
+                    paintColor.style.backgroundColor = colorArr[a - 1];
+                    currentNum -= 1;
+                } else {
+                    paintColor.style.backgroundColor = "rgb(214, 214, 214)";
+                    currentNum += 1;
+                }
+
+                if (CPpicture.style.display == "none") {
+                    CPpicture.style.display = "block";
+                } else if (CPpicture.style.display == "block") {
+                    CPpicture.style.display = "none";
+                }
+
+                if (currentNum == 6) {
+                    let rightDiv2 = document.getElementById('RightDiv2');
+                    rightDiv2.style.display = 'block';
+                    init();
+                }
+            }
+
+
+        </script>
+</body>
+
+</html>
