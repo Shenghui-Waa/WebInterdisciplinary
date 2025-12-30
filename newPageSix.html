@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新第6页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            /* 隐藏滚动条，适配全屏场景 */
+            font-family: "微软雅黑", "宋体", serif;
+        }
+
+        /* 1. 背景图容器：缓慢渐显 */
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("Images/PageFifteenImages/background6.png") no-repeat center center;
+            /* 替换为你的背景图路径 */
+            background-size: 95% auto;
+            opacity: 0;
+            /* 初始透明 */
+            transition: opacity 4s ease;
+            /* 6秒渐显（可调整时长） */
+            z-index: 1;
+            /* 层级低于文字和音乐图标 */
+        }
+
+        /* 背景渐显触发类 */
+        .bg-container.show {
+            opacity: 1;
+        }
+
+        /* 2. 右上角音乐图标 */
+        .music-icon {
+            position: fixed;
+            top: 3vw;
+            right: 6vh;
+            width: 12vw;
+            height: 12vh;
+            background: url("Images/PageFifteenImages/music-icon.png") no-repeat center center;
+            /* 替换为你的音乐图标路径 */
+            background-size: contain;
+            cursor: pointer;
+            /* 鼠标悬浮显示手型 */
+            z-index: 3;
+            /* 层级最高 */
+            transition: transform 0.3s ease;
+            /* 点击动效 */
+        }
+
+        .music-icon:hover {
+            transform: scale(1.1);
+            /* 悬浮放大 */
+        }
+
+        #RightDiv:hover {
+            transform: scale(1.1);
+            /* 悬浮放大 */
+            cursor: pointer;
+        }
+
+        /* 3. 文字框样式 */
+        .text-box {
+            position: fixed;
+            bottom: 15vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            max-width: 900px;
+            padding: 25px;
+            /* 
+            border-radius: 15px;
+            border: 2px solid #e6d8b8; 古风边框 */
+            font-size: 19px;
+            line-height: 1.8;
+            color: #4a3b28;
+            /* 古风文字色 */
+            z-index: 2;
+            /* 层级高于背景，低于音乐图标 */
+            /* box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 阴影增强质感 */
+        }
+
+        .textFrame {
+            position: fixed;
+            bottom: 3vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+
+
+
+            color: #4a3b28;
+            /* 古风文字色 */
+            z-index: 2;
+            /* 层级高于背景，低于音乐图标 */
+
+            opacity: 0.8;
+
+        }
+
+        .text-content {
+            white-space: pre-line;
+            /* 保留文字换行 */
+        }
+
+
+        .modal-overlay {
+            display: none;
+            /* 默认隐藏 */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            /* 半透明黑色 */
+            z-index: 1000;
+            /* 确保在最上层 */
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 弹框内容框 */
+        .modal-content {
+            background-image: url("Images/ModelPageImages/downBG.png");
+            background-size: cover;
+            padding: 30px;
+            border-radius: 8px;
+            width: 1200px;
+            /* 你可以调整宽度 */
+            height: 675.6px;
+            max-width: 90%;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+
+        .modal-content h2 {
+            margin-top: 0;
+        }
+
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 100px;
+            cursor: pointer;
+            color: #aaa;
+            z-index: 10;
+            /* 确保标题在内容上方 */
+        }
+
+        .close-btn:hover {
+            color: #000;
+        }
+
+        .modal-content p {
+            line-height: 1.6;
+        }
+
+        .popupBox {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            position: relative;
+
+        }
+
+        .BookDiv {
+            width: 1000px;
+            height: 563px;
+            overflow: hidden;
+
+            /* transition: all 3s linear 0s; */
+            transform: translate(-50px, 0);
+            position: absolute;
+            display: flex;
+            /* 子元素横向排列 */
+            align-items: center;
+        }
+
+        .BookDivson {
+            display: inline-block;
+            flex: 0 0 1000px;
+            /* width:1000px; */
+            height: 562.5px;
+            position: relative;
+            transition: all 3s linear 0s;
+        }
+
+        .overBook {
+            width: 1000px;
+
+            height: auto;
+            position: relative;
+            margin: 0 auto;
+            /* 居中显示 */
+        }
+
+        .aPuzzle {
+            width: 50%;
+            aspect-ratio: 2/1;
+            position: absolute;
+            display: flex;
+            left: 260px;
+            top: 150px;
+            flex-wrap: wrap;
+            border: 2px solid black;
+        }
+
+        .aPuzzleImage {
+            width: 50%;
+            aspect-ratio: 2/1;
+            position: absolute;
+            left: 260px;
+            top: 150px;
+
+            transition: all 3s linear 0.5s;
+        }
+
+        .aPuzzleSon {
+            width: 25%;
+            height: 50%;
+            background-color: rgba(85, 84, 84, 0.808);
+            border: 2px solid black;
+            box-sizing: border-box;
+            /*向内延伸的边框*/
+            /* pointer-events: none; */
+        }
+
+        .puzzleImageSon {
+            width: 25%;
+            height: 50%;
+            position: absolute;
+            cursor: pointer;
+
+        }
+    </style>
+    <style>
+        /* 第二个模态框遮罩层（专属前缀） */
+        .reward-modal2-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        /* 第二个模态框内容容器（专属前缀） */
+        .reward-modal2-content {
+            position: relative;
+            background: #f5f0e8;
+            /* 仿古风纸张背景色 */
+            border: 2px solid #8a735a;
+            border-radius: 8px;
+            padding: 40px 60px;
+            max-width: 600px;
+            text-align: center;
+            font-family: "SimSun", "宋体", serif;
+            /* 仿古风字体 */
+        }
+
+        /* 关闭按钮（专属前缀） */
+        .reward-modal2-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #8a735a;
+        }
+
+        .reward-modal2-close:hover {
+            color: #5a4630;
+        }
+
+        /* 标题样式（专属前缀） */
+        .reward-modal2-title {
+            font-size: 28px;
+            color: #5a4630;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        /* 图片样式（专属前缀） */
+        .reward-modal2-img {
+            width: 300px;
+            height: auto;
+            margin-bottom: 25px;
+        }
+
+        /* 说明文字（专属前缀） */
+        .reward-modal2-desc {
+            font-size: 16px;
+            color: #5a4630;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        /* 下一页按钮（专属前缀） */
+        .reward-modal2-next-btn {
+            font-size: 16px;
+            color: #5a4630;
+            cursor: pointer;
+            text-align: right;
+            margin-right: 10px;
+        }
+
+        .reward-modal2-arrow {
+            font-size: 18px;
+            margin-left: 5px;
+        }
+
+        .reward-modal2-next-btn:hover {
+            color: #8a735a;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 背景图容器 -->
+    <div class="bg-container" id="bgContainer">
+        <!-- 右上角音乐图标 -->
+        <div class="music-icon" id="musicIcon" ></div>
+
+        <!-- 隐藏的音频播放器（播放本地音乐） -->
+        <audio id="audioPlayer" src="Auidos/剧情音乐.MP3" loop></audio> <!-- 替换为你的本地音乐路径 -->
+
+        <!-- 文字显示框 -->
+        <img class="textFrame" src="Images/PageFifteenImages/texFrame.png" />
+        <div class="text-box">
+            <div class="text-content" id="textContent"></div>
+            <img id="RightDiv" src="Images\ModelPageImages\RightBT.png"
+                style="position: absolute; bottom: 5%; right: 5%;display: none; " onclick="openPopup()" />
+        </div>
+
+
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
+        <div class="modal-content">
+            <!-- 关闭按钮 × -->
+            <span class="close-btn" onclick="closePopup()">&times;</span>
+            <img class="aPuzzleImage" src="Images/PuzzleImage/puzzleDownImage.jpg" />
+            <div class="aPuzzle">
+                <div class="aPuzzleSon" data-index="1"></div>
+                <div class="aPuzzleSon" data-index="2"></div>
+                <div class="aPuzzleSon" data-index="3"></div>
+                <div class="aPuzzleSon" data-index="4"></div>
+                <div class="aPuzzleSon" data-index="5"></div>
+                <div class="aPuzzleSon" data-index="6"></div>
+                <div class="aPuzzleSon" data-index="7"></div>
+                <div class="aPuzzleSon" data-index="8"></div>
+                <img class="puzzleImageSon" data-index="1" src="Images/PuzzleImage/puzzleImageSon_1.png"
+                    style="left: -150px;top: 10px;" />
+                <img class="puzzleImageSon" data-index="2" src="Images/PuzzleImage/puzzleImageSon_2.png"
+                    style="left: -250px;top: -120px;" />
+                <img class="puzzleImageSon" data-index="3" src="Images/PuzzleImage/puzzleImageSon_3.png"
+                    style="left: -250px;top: 130px;" />
+                <img class="puzzleImageSon" data-index="4" src="Images/PuzzleImage/puzzleImageSon_4.png"
+                    style="left: -150px;top: 250px;" />
+                <img class="puzzleImageSon" data-index="5" src="Images/PuzzleImage/puzzleImageSon_5.png"
+                    style="left: 610px;top: 10px;" />
+                <img class="puzzleImageSon" data-index="6" src="Images/PuzzleImage/puzzleImageSon_6.png"
+                    style="left: 710px;top: -120px;" />
+                <img class="puzzleImageSon" data-index="7" src="Images/PuzzleImage/puzzleImageSon_7.png"
+                    style="left: 710px;top: 130px;" />
+                <img class="puzzleImageSon" data-index="8" src="Images/PuzzleImage/puzzleImageSon_8.png"
+                    style="left: 610px;top: 250px;" />
+            </div>
+            <img id="RightDiv2" src="Images\ModelPageImages\RightBT.png"
+                style="position: absolute; bottom: 5%; right: 5%;display: none; " onclick="openPopup2()" />
+
+        </div>
+    </div>
+    <!-- 第二个模态框 -->
+    <!-- 第二个模态框（独立样式，无重复） -->
+    <div class="reward-modal2-overlay" id="modalOverlay2" onclick="closeModalOnOverlay2(event)">
+        <div class="reward-modal2-content">
+            <!-- 关闭按钮 × -->
+            <span class="reward-modal2-close" onclick="closePopup2()">&times;</span>
+
+            <!-- 标题 -->
+            <div class="reward-modal2-title">获得奖励</div>
+
+            <!-- 核心图片（路径保持不变） -->
+            <img class="reward-modal2-img" src="Images/shouchuan/A1.png" />
+
+            <!-- 说明文字 -->
+            <div class="reward-modal2-desc">
+                获得小手串一个，集齐五个奖励可兑换实物，线下到昆曲博物馆参观向工作人员出示即可。
+            </div>
+
+            <!-- 下一页按钮 -->
+            <div class="reward-modal2-next-btn" onclick="handleNextPage2()">
+                点击下一页 <span class="reward-modal2-arrow">▶</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== 1. 背景图缓慢渐显 ==========
+        const bgContainer = document.getElementById('bgContainer');
+        // 页面加载完成后触发背景渐显
+        window.addEventListener('load', () => {
+            bgContainer.classList.add('show');
+            // 背景开始渐显的同时，启动文字逐字显示
+            startTypewriter();
+        });
+
+        // ========== 2. 文字逐字出现 ==========
+        const textContent = document.getElementById('textContent');
+        // 要显示的文本内容（可直接替换）
+        const targetText = `“不到园林，怎知春色如许！原来姹紫嫣红开遍，似这般都付与断井颓垣。这般景致，竟无人提起！”。杜丽娘在花园内游玩，看到花园内生机勃勃的美景，想起自己枯寂的闺房生活，内心感触。自然春光唤醒了她的青春意识，春光易逝，红颜易老。回到房中，因受勃勃春光与诗经的影响，她在梦中与柳梦梅相遇、相知，相恋。`;
+        let charIndex = 0; // 文字索引
+        const typeSpeed = 120; // 每个字的显示间隔（毫秒），数值越小越快
+
+        // 逐字显示核心函数
+        function startTypewriter() {
+            if (charIndex < targetText.length) {
+                // 追加当前字符到文本容器
+                textContent.textContent += targetText.charAt(charIndex);
+                charIndex++;
+                // 递归调用，实现逐字效果
+                setTimeout(startTypewriter, typeSpeed);
+            } else {
+                let rightDiv = document.getElementById('RightDiv');
+                rightDiv.style.display = 'block';
+            }
+
+        }
+
+        // ========== 3. 右上角图标点击播放/暂停音乐 ==========
+        const musicIcon = document.getElementById('musicIcon');
+        const audioPlayer = document.getElementById('audioPlayer');
+        let isMusicPlaying = false; // 音乐播放状态标记
+
+        musicIcon.addEventListener('click', () => {
+            if (isMusicPlaying) {
+                audioPlayer.pause(); // 暂停音乐
+                // 可选：暂停时切换图标（替换为暂停图标路径）
+                // musicIcon.style.backgroundImage = "url('music-icon.png')";
+            } else {
+                audioPlayer.play(); // 播放音乐
+                // 可选：播放时切换图标（替换为播放中图标路径）
+                // musicIcon.style.backgroundImage = "url('music-playing-icon.png')";
+            }
+            isMusicPlaying = !isMusicPlaying; // 切换状态
+        });
+
+        const modalOverlay = document.getElementById('modalOverlay');
+
+        function openPopup() {
+            modalOverlay.style.display = 'flex';
+
+        }
+
+        function closePopup() {
+            modalOverlay.style.display = 'none';
+        }
+
+        function closeModalOnOverlay(event) {
+            if (event.target === modalOverlay) {
+                closePopup();
+            }
+        }
+
+
+    </script>
+    <script>
+        function openPopup2() {
+            document.getElementById("modalOverlay2").style.display = 'flex';
+
+        }
+        // 关闭模态框2的函数（如果已有可保留）
+        function closePopup2() {
+            document.getElementById("modalOverlay2").style.display = "none";
+        }
+
+        // 点击遮罩层关闭模态框2（如果已有可保留）
+        function closeModalOnOverlay2(event) {
+            if (event.target === document.getElementById("modalOverlay2")) {
+                closePopup2();
+            }
+        }
+
+        // 下一页按钮逻辑（可根据你的业务需求修改）
+        function handleNextPage2() {
+            // 这里可以添加下一页的逻辑，比如跳转到新页面/关闭模态框/显示新内容等
+            window.location.href = "newPageSeven.html";
+            // 示例：关闭当前模态框
+            closePopup2();
+        }
+    </script>
+    <script>
+        const puzzleImageSon = document.getElementsByClassName("puzzleImageSon");
+        let cardIsDragging = false;
+        let currentX;
+        let currentY;
+        let initialX;//初始X
+        let initialY;
+        let xOffset = 0;
+        let yOffset = 0;
+        let placedCount = 0;
+
+        let TheConstPuImageSon;
+        //防止默认拖拽
+        document.addEventListener('dragstart', (e) => {
+            // 判断目标是否是需要处理的 div（带 no-default-drag 类）
+            if (e.target.classList.contains('puzzleImageSon')) {
+                e.preventDefault(); // 取消默认拖拽行为
+                e.stopPropagation();//取消事件扩散
+            }
+        });
+
+        for (let i = 0; i < puzzleImageSon.length; i++) {
+            // puzzleImageSon[i].addEventListener('mousedown', cardDragStart(puzzleImageSon[i]));
+            const a = puzzleImageSon[i];
+            a.addEventListener('mousedown', function (e) {
+                cardDragStart(a, e);
+            });
+            // puzzleImageSon[i].addEventListener('mousedown', cardDragStart);
+
+        }
+        document.addEventListener('mousemove', cardDrag);
+        document.addEventListener('mouseup', cardDragEnd);
+
+
+
+        function cardDragStart(ThePuImageSon, e) {//传入div对象
+            // 获取初始位置
+            cardIsDragging = true;
+
+            TheConstPuImageSon = ThePuImageSon;
+
+            initialX = e.clientX - xOffset;
+            initialY = e.clientY - yOffset;
+
+            currentX = e.clientX - initialX;
+            currentY = e.clientY - initialY;
+
+            setTranslate(currentX, currentY, ThePuImageSon);
+
+        }
+
+        function setTranslate(xPos, yPos, el) {//改变位置
+            el.style.transform = `translate3d(${xPos}px, ${yPos}px, 0)`;
+        }
+
+        function getTranslateY(element) {
+            // 1. 获取元素计算后的 transform 样式
+            const transform = window.getComputedStyle(element).getPropertyValue('transform');
+
+            // 2. 如果没有 transform 变换（值为 'none'），返回 0
+            if (transform === 'none') {
+                return 0;
+            }
+
+            // 3. 解析矩阵（支持 2D matrix 和 3D matrix3d）
+            const matrix = new DOMMatrix(transform); // 用 DOMMatrix 解析矩阵
+
+            // 4. 2D 矩阵的 y 偏移在 matrix.f；3D 矩阵在 matrix.m42（等价于索引 13）
+            return matrix.is2D ? matrix.f : matrix.m42;
+        }
+
+        function cardDrag(e) {
+            if (cardIsDragging) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                currentX = (e.clientX - initialX);
+                currentY = (e.clientY - initialY);
+                xOffset = currentX;
+                yOffset = currentY;
+
+                // 设置元素位置
+                setTranslate(currentX, currentY, TheConstPuImageSon);
+
+                // const garbageCan = document.getElementById("garbageCan");
+                // checkDropZone(e,garbageCan);
+            }
+        }
+        function cardDragEnd(e) {
+            //松开鼠标时结束拖拽
+            if (cardIsDragging == true) {
+                cardIsDragging = false;
+                const aax = e.pageX;
+                const aay = e.pageY;
+
+                // 获取下层元素（假设它在顶层下方）
+                const originalDisplay = TheConstPuImageSon.style.display;
+                TheConstPuImageSon.style.display = 'none';
+
+                const target = document.elementFromPoint(aax, aay);
+
+                TheConstPuImageSon.style.display = originalDisplay;
+                // 如果命中底层元素，手动触发 hover 效果
+                if (target.className === "aPuzzleSon") {
+                    if (target.dataset.index == TheConstPuImageSon.dataset.index) {
+                        target.style.backgroundColor = 'transparent';
+                        target.style.border = 'none';
+                        placedCount++;
+                        TheConstPuImageSon.remove();
+                        checkComplete();
+                    }
+
+                } else {
+
+                }
+
+                TheConstPuImageSon.style.transform = '';
+                // 重置偏移量，避免下次拖拽受影响
+                xOffset = 0;
+                yOffset = 0;
+
+
+            }
+        }
+
+
+
+        // 检查是否全部归位
+        function checkComplete() {
+            if (placedCount === 8) {
+                const a = document.getElementsByClassName('aPuzzle');
+                const b = document.getElementsByClassName('aPuzzleImage');
+                a[0].remove();
+                setTimeout(() => {
+
+                    // completeTip.style.display = 'block';
+                    b[0].style.left = "0px";
+                    b[0].style.top = "20px";
+                    b[0].style.width = "100%";
+                    let rightDiv2 = document.getElementById('RightDiv2');
+                    rightDiv2.style.display = 'block';
+                }, 500);
+            }
+        }
+
+
+    </script>
+</body>
+
+</html>

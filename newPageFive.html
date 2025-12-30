@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新第5页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            overflow: hidden; /* 隐藏滚动条，适配全屏场景 */
+            font-family: "微软雅黑", "宋体", serif;
+        }
+
+        /* 1. 背景图容器：缓慢渐显 */
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("Images/PageFifteenImages/background5.png") no-repeat center center; /* 替换为你的背景图路径 */
+            background-size: 95% auto; 
+            opacity: 0; /* 初始透明 */
+            transition: opacity 4s ease; /* 6秒渐显（可调整时长） */
+            z-index: 1; /* 层级低于文字和音乐图标 */
+        }
+        /* 背景渐显触发类 */
+        .bg-container.show {
+            opacity: 1;
+        }
+
+        /* 2. 右上角音乐图标 */
+        .music-icon {
+            position: fixed;
+            top: 3vw;
+            right: 6vh;
+            width: 12vw;
+            height: 12vh;
+            background: url("Images/PageFifteenImages/music-icon.png") no-repeat center center; /* 替换为你的音乐图标路径 */
+            background-size: contain;
+            cursor: pointer; /* 鼠标悬浮显示手型 */
+            z-index: 3; /* 层级最高 */
+            transition: transform 0.3s ease; /* 点击动效 */
+        }
+        .music-icon:hover {
+            transform: scale(1.1); /* 悬浮放大 */
+        }
+
+        #RightDiv:hover{
+            transform: scale(1.1); /* 悬浮放大 */
+            cursor: pointer;
+        }
+
+        /* 3. 文字框样式 */
+        .text-box {
+            position: fixed;
+            bottom: 15vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            max-width: 900px;
+            padding: 25px;
+/* 
+            border-radius: 15px;
+            border: 2px solid #e6d8b8; 古风边框 */
+            font-size: 19px;
+            line-height: 1.8;
+            color: #4a3b28; /* 古风文字色 */
+            z-index: 2; /* 层级高于背景，低于音乐图标 */
+            /* box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); 阴影增强质感 */
+        }
+        .textFrame {
+            position: fixed;
+            bottom: 3vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+
+
+
+            color: #4a3b28; /* 古风文字色 */
+            z-index: 2; /* 层级高于背景，低于音乐图标 */
+
+            opacity: 0.8;
+        
+        }
+        .text-content {
+            white-space: pre-line; /* 保留文字换行 */
+        }
+    </style>
+</head>
+<body>
+    <!-- 背景图容器 -->
+    <div class="bg-container" id="bgContainer">
+            <!-- 右上角音乐图标 -->
+    <div class="music-icon" id="musicIcon"></div>
+
+    <!-- 隐藏的音频播放器（播放本地音乐） -->
+    <audio id="audioPlayer" src="Auidos/剧情音乐.MP3" loop></audio> <!-- 替换为你的本地音乐路径 -->
+
+    <!-- 文字显示框 -->
+     <img class="textFrame" src="Images/PageFifteenImages/texFrame.png"/>
+    <div class="text-box">
+        <div class="text-content" id="textContent"></div>
+        <img id="RightDiv" src="Images\ModelPageImages\RightBT.png" onclick="nextPage()" style="position: absolute; bottom: 5%; right: 5%;display: none; " />
+    </div>
+
+
+    </div>
+
+
+
+    <script>
+         const nextPage = () => {
+
+            window.location.href = "newPageSix.html"; // 替换为下一页的实际文件名
+        };
+
+
+        // ========== 1. 背景图缓慢渐显 ==========
+        const bgContainer = document.getElementById('bgContainer');
+        // 页面加载完成后触发背景渐显
+        window.addEventListener('load', () => {
+            bgContainer.classList.add('show');
+            // 背景开始渐显的同时，启动文字逐字显示
+            startTypewriter();
+        });
+
+        // ========== 2. 文字逐字出现 ==========
+        const textContent = document.getElementById('textContent');
+        // 要显示的文本内容（可直接替换）
+        const targetText = `教书先生陈最良为杜丽娘讲解诗经，丫鬟春香意外发现一座花园。杜丽娘因学“关关雎鸠，在河之洲；窈窕淑女，君子好逑”,而感到困闷时，丫鬟春香告诉小姐可以到花园里面走一走，散散心。`;
+        let charIndex = 0; // 文字索引
+        const typeSpeed = 120; // 每个字的显示间隔（毫秒），数值越小越快
+
+        // 逐字显示核心函数
+        function startTypewriter() {
+            if (charIndex < targetText.length) {
+                // 追加当前字符到文本容器
+                textContent.textContent += targetText.charAt(charIndex);
+                charIndex++;
+                // 递归调用，实现逐字效果
+                setTimeout(startTypewriter, typeSpeed);
+            }else{
+                let rightDiv = document.getElementById('RightDiv');
+                rightDiv.style.display = 'block';
+            }
+            
+        }
+
+        // ========== 3. 右上角图标点击播放/暂停音乐 ==========
+        const musicIcon = document.getElementById('musicIcon');
+        const audioPlayer = document.getElementById('audioPlayer');
+        let isMusicPlaying = false; // 音乐播放状态标记
+
+        musicIcon.addEventListener('click', () => {
+            if (isMusicPlaying) {
+                audioPlayer.pause(); // 暂停音乐
+                // 可选：暂停时切换图标（替换为暂停图标路径）
+                // musicIcon.style.backgroundImage = "url('music-icon.png')";
+            } else {
+                audioPlayer.play(); // 播放音乐
+                // 可选：播放时切换图标（替换为播放中图标路径）
+                // musicIcon.style.backgroundImage = "url('music-playing-icon.png')";
+            }
+            isMusicPlaying = !isMusicPlaying; // 切换状态
+        });
+    </script>
+</body>
+</html>

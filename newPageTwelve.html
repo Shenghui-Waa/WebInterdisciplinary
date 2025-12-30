@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>昆曲艺术展示</title>
+    <meta charset="utf-8" />
+    <style type="text/css">
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            margin: 0 auto;
+            position: relative;
+            background: linear-gradient(to bottom, #0f1c2e, #1a2c42);
+        }
+
+        body {
+            background-image: url("Images/ModelPageImages/PageOneBackground.png");
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .nextImage {
+            position: absolute;
+            left: 900px;
+            bottom: 25px;
+            cursor: pointer;
+
+            transform-origin: center center
+        }
+
+        .nextImage:hover {
+            transform: scale(1.3);
+        }
+
+
+        .BookDivDiv {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+            transform: scale(1.55);
+        }
+
+        .BookDivDiv.closeBook {
+            animation: CloseBook 3s ease-in-out forwards;
+        }
+
+        .BookDiv.close {
+            width: 100px;
+            transform: translate(0, 0);
+            animation: CloseBookInner 3s ease-in-out forwards;
+        }
+
+        .leftBook.close {
+            transform: translate(-90px, 8px);
+            animation: CloseLeftBook 3s ease-in-out forwards;
+        }
+
+        .rightBook.close {
+            transform: translate(0, 0);
+            animation: CloseRightBook 3s ease-in-out forwards;
+        }
+
+        .BookDiv {
+            width: 1000px;
+            height: 563px;
+            overflow: hidden;
+            transition: all 3s linear 0s;
+            transform: translate(-50px, 0);
+            position: absolute;
+            display: flex;
+            align-items: center;
+        }
+
+
+
+        .BookDivson {
+            display: inline-block;
+            flex: 0 0 1000px;
+            height: 562.5px;
+            position: relative;
+            transition: all 3s linear 0s;
+        }
+
+        .overBook {
+            width: 1000px;
+            height: auto;
+            position: absolute;
+            margin: 0 auto;
+            z-index: -1;
+        }
+
+        .leftBook {
+            position: absolute;
+            width: 130px;
+            height: 665px;
+            transform: translate(-590px, 8px);
+            z-index: 1;
+            transition: all 3s linear 0s;
+        }
+
+
+
+        .rightBook {
+            position: absolute;
+            width: 270px;
+            z-index: 1;
+            transform: translate(552px, 0);
+        }
+
+
+
+        /* 视频播放器容器 */
+        .video-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 60%;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+            border: 2px solid rgba(212, 175, 55, 0.5);
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* 视频控制栏 */
+        .video-controls {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 3;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .video-wrapper:hover .video-controls {
+            opacity: 1;
+        }
+
+        .control-btn {
+            background: rgba(212, 175, 55, 0.8);
+            border: none;
+            color: #000;
+            padding: 5px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            min-width: 60px;
+            text-align: center;
+            font-family: "微软雅黑", sans-serif;
+        }
+
+        .control-btn:hover {
+            background: rgba(212, 175, 55, 1);
+            transform: scale(1.05);
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.8);
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .progress-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: linear-gradient(to right, #d4af37, #ffd700);
+            border-radius: 2px;
+            width: 0%;
+        }
+
+        .time-display {
+            color: #fff;
+            font-size: 12px;
+            min-width: 80px;
+            text-align: center;
+            font-family: "微软雅黑", sans-serif;
+        }
+
+        /* 昆曲标题 */
+        .kunqu-title {
+            position: absolute;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #d4af37;
+            font-size: 28px;
+            text-align: center;
+            z-index: 2;
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.8);
+            letter-spacing: 4px;
+            font-family: "楷体", "KaiTi", serif;
+            font-weight: bold;
+        }
+
+        /* 昆曲简介 */
+        .kunqu-intro {
+            position: absolute;
+            bottom: 25%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            color: #f5f5f5;
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.5;
+            font-family: "宋体", serif;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 10px;
+            border-radius: 5px;
+            backdrop-filter: blur(5px);
+        }
+
+        /* 合上按钮 */
+        .close-book-btn {
+            position: absolute;
+            bottom: 25px;
+            right: 50px;
+            width: 60px;
+            height: 60px;
+            background: rgba(212, 175, 55, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 2;
+            transition: all 0.3s ease;
+            font-family: "微软雅黑", sans-serif;
+            color: #000;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .close-book-btn:hover {
+            background: rgba(212, 175, 55, 1);
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+        }
+
+        /* 昆曲装饰元素 */
+        .kunqu-decoration {
+            position: absolute;
+            z-index: 0;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .decoration-left {
+            top: 20%;
+            left: 10%;
+            width: 100px;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M20,50 Q40,30 60,50 T100,50" fill="none" stroke="%23d4af37" stroke-width="2"/></svg>') no-repeat;
+        }
+
+        .decoration-right {
+            bottom: 30%;
+            right: 10%;
+            width: 100px;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M20,50 Q40,70 60,50 T100,50" fill="none" stroke="%23d4af37" stroke-width="2"/></svg>') no-repeat;
+        }
+
+        /* 合上动画 */
+        @keyframes CloseBook {
+            0% {
+                transform: scale(1.55);
+            }
+
+            100% {
+                transform: scale(1.2);
+            }
+        }
+
+        @keyframes CloseBookInner {
+            0% {
+                width: 1000px;
+                transform: translate(-50px, 0);
+            }
+
+            100% {
+                width: 100px;
+                transform: translate(0, 0);
+            }
+        }
+
+        @keyframes CloseLeftBook {
+            0% {
+                transform: translate(-590px, 8px);
+            }
+
+            100% {
+                transform: translate(-90px, 8px);
+            }
+        }
+
+        @keyframes CloseRightBook {
+            0% {
+                transform: translate(552px, 0);
+            }
+
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <a href="PageTwo.html"><img class="PageOneCoin" src="Images/PageOneIcon.png" alt="牡丹亭" /></a> -->
+    <div class="BookDivDiv" id="bookDivDiv">
+        <img class="leftBook" src="Images/ModelPageImages/LeftFrame.png" id="leftBook" />
+        <div class="BookDiv" id="bookDiv">
+            <div class="BookDivson">
+                <img class="overBook" src="Images/ModelPageImages/downBG.png" />
+
+                <!-- 昆曲装饰元素 -->
+                <div class="kunqu-decoration decoration-left"></div>
+                <div class="kunqu-decoration decoration-right"></div>
+
+                <!-- 昆曲标题 -->
+                <div class="kunqu-title">昆曲艺术</div>
+
+                <!-- 视频播放器 -->
+                <div class="video-container">
+                    <div class="video-wrapper" id="videoWrapper">
+                        <video id="kunquVideo" preload="metadata">
+                            <!-- 这里替换为您的昆曲视频路径 -->
+                            <source src="videos/kunqu.mp4" type="video/mp4">
+                            <source src="videos/kunqu.webm" type="video/webm">
+                            您的浏览器不支持视频播放。
+                        </video>
+                        <div class="video-controls">
+                            <button class="control-btn" id="playPauseBtn">播放</button>
+                            <div class="progress-bar" id="progressBar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <div class="time-display" id="timeDisplay">00:00 / 00:00</div>
+                            <button class="control-btn" id="fullscreenBtn">全屏</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 昆曲简介 -->
+                <div class="kunqu-intro">
+                    昆曲，中国最古老的戏曲剧种之一，被誉为"百戏之祖"。起源于14世纪苏州昆山，2001年被联合国教科文组织列为"人类口头和非物质遗产代表作"。
+                </div>
+
+                <!-- 合上卷轴按钮 -->
+                <img class="nextImage" src="Images/ModelPageImages/RightBT.png" onclick="closeBook()" />
+
+            </div>
+        </div>
+        <img class="rightBook" src="Images/ModelPageImages/RightFrame.png" id="rightBook" />
+    </div>
+
+    <script type="text/javascript">
+        // ========== 视频播放器功能 ==========
+        const video = document.getElementById('kunquVideo');
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        const timeDisplay = document.getElementById('timeDisplay');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        const videoWrapper = document.getElementById('videoWrapper');
+
+        // 初始化视频播放器
+        function initVideoPlayer() {
+            // 播放/暂停控制
+            playPauseBtn.addEventListener('click', () => {
+                if (video.paused) {
+                    video.play();
+                    playPauseBtn.textContent = '暂停';
+                } else {
+                    video.pause();
+                    playPauseBtn.textContent = '播放';
+                }
+            });
+
+            // 更新进度条
+            video.addEventListener('timeupdate', () => {
+                if (video.duration) {
+                    const progress = (video.currentTime / video.duration) * 100;
+                    progressFill.style.width = `${progress}%`;
+
+                    // 更新时间显示
+                    const currentTime = formatTime(video.currentTime);
+                    const duration = formatTime(video.duration);
+                    timeDisplay.textContent = `${currentTime} / ${duration}`;
+                }
+            });
+
+            // 点击进度条跳转
+            progressBar.addEventListener('click', (e) => {
+                const rect = progressBar.getBoundingClientRect();
+                const pos = (e.clientX - rect.left) / rect.width;
+                video.currentTime = pos * video.duration;
+            });
+
+            // 全屏功能
+            fullscreenBtn.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    videoWrapper.requestFullscreen().catch(err => {
+                        console.log(`全屏请求失败: ${err.message}`);
+                    });
+                } else {
+                    document.exitFullscreen();
+                }
+            });
+
+            // 视频结束处理
+            video.addEventListener('ended', () => {
+                playPauseBtn.textContent = '重新播放';
+            });
+
+            // 初始化时间显示
+            video.addEventListener('loadedmetadata', () => {
+                if (video.duration) {
+                    const duration = formatTime(video.duration);
+                    timeDisplay.textContent = `00:00 / ${duration}`;
+                }
+            });
+
+            // 视频错误处理
+            video.addEventListener('error', (e) => {
+                console.error('视频加载错误:', e);
+                playPauseBtn.textContent = '加载错误';
+                playPauseBtn.disabled = true;
+            });
+        }
+
+        // 格式化时间显示（mm:ss）
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // 页面加载完成后初始化视频播放器
+        window.addEventListener('load', () => {
+            initVideoPlayer();
+        });
+
+        // ========== 合上卷轴功能 ==========
+        function closeBook() {
+            const bookDivDiv = document.getElementById('bookDivDiv');
+            const bookDiv = document.getElementById('bookDiv');
+            const leftBook = document.getElementById('leftBook');
+            const rightBook = document.getElementById('rightBook');
+            const videoContainer = document.querySelector('.video-container');
+            const kunquTitle = document.querySelector('.kunqu-title');
+            const kunquIntro = document.querySelector('.kunqu-intro');
+            // const closeBtn = document.querySelector('.close-book-btn');
+
+            // 停止视频播放
+            video.pause();
+
+            // 隐藏视频和文字内容
+            // videoContainer.style.opacity = '0';
+            // kunquTitle.style.opacity = '0';
+            // kunquIntro.style.opacity = '0';
+            // closeBtn.style.opacity = '0';
+
+            // 添加合上动画
+            bookDivDiv.classList.add('closeBook');
+            bookDiv.classList.add('close');
+            leftBook.classList.add('close');
+            rightBook.classList.add('close');
+
+        }
+
+        // ========== 翻页功能 ==========
+
+    </script>
+</body>
+
+</html>

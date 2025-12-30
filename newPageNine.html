@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新第9页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            font-family: "微软雅黑", "宋体", serif;
+        }
+
+        /* 背景图容器：缓慢渐显 */
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("Images/PageFifteenImages/background9.jpg") no-repeat center center;
+            background-size: 95% auto;
+            opacity: 0;
+            transition: opacity 4s ease;
+            z-index: 1;
+        }
+
+        /* 背景渐显触发类 */
+        .bg-container.show {
+            opacity: 1;
+        }
+
+        /* 右上角音乐图标 */
+        .music-icon {
+            position: fixed;
+            top: 3vw;
+            right: 6vh;
+            width: 12vw;
+            height: 12vh;
+            background: url("Images/PageFifteenImages/music-icon.png") no-repeat center center;
+            background-size: contain;
+            cursor: pointer;
+            z-index: 3;
+            transition: transform 0.3s ease;
+        }
+
+        .music-icon:hover {
+            transform: scale(1.1);
+        }
+
+        #RightDiv:hover {
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+
+        /* 文字框样式 */
+        .text-box {
+            position: fixed;
+            bottom: 15vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            max-width: 900px;
+            padding: 25px;
+            font-size: 19px;
+            line-height: 1.8;
+            color: #4a3b28;
+            z-index: 2;
+        }
+
+        .textFrame {
+            position: fixed;
+            bottom: 3vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            color: #4a3b28;
+            z-index: 2;
+            opacity: 0.8;
+        }
+
+        .text-content {
+            white-space: pre-line;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 弹框内容框 - 卷轴样式 */
+        .modal-content {
+            background-image: url("Images/ModelPageImages/downBG.png");
+            background-size: cover;
+            padding: 30px;
+            border-radius: 8px;
+            width: 1200px;
+            height: 675.6px;
+            max-width: 90%;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            border: 8px solid #d4b483;
+            border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cpath d='M0,0 L20,0 L20,20 L0,20 Z' fill='none' stroke='%238a735a' stroke-width='2'/%3E%3C/svg%3E") 8 stretch;
+        }
+
+        /* 灰尘样式 */
+        .dust {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background-size: contain;
+            background-repeat: no-repeat;
+            pointer-events: none;
+            opacity: 0.9;
+            filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.3));
+        }
+
+        /* 掸子/扫把样式 */
+        .broom {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background-image: url("Images/newPageNineImages/boom.png");
+            background-size: contain;
+            background-repeat: no-repeat;
+            cursor: grab;
+            z-index: 10;
+            transition: transform 0.1s ease;
+            filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+        }
+
+        .broom:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+
+        /* 提示文字 - 改为h1标签样式 */
+        .instruction-title {
+            position: absolute;
+            top: 10%;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 36px;
+            color: #5a4630;
+            text-align: center;
+            font-weight: bold;
+            letter-spacing: 3px;
+            z-index: 5;
+            margin: 0;
+            padding: 10px 20px;
+            background-color: rgba(245, 240, 232, 0.85);
+            border-radius: 8px;
+            border: 2px solid #8a735a;
+            white-space: nowrap;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 100px;
+            cursor: pointer;
+            color: #aaa;
+            z-index: 10;
+        }
+
+        .close-btn:hover {
+            color: #000;
+        }
+
+        /* 第二个模态框样式 */
+        .reward-modal2-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .reward-modal2-content {
+            position: relative;
+            background: #f5f0e8;
+            border: 2px solid #8a735a;
+            border-radius: 8px;
+            padding: 40px 60px;
+            max-width: 600px;
+            text-align: center;
+            font-family: "SimSun", "宋体", serif;
+        }
+
+        .reward-modal2-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #8a735a;
+        }
+
+        .reward-modal2-close:hover {
+            color: #5a4630;
+        }
+
+        .reward-modal2-title {
+            font-size: 28px;
+            color: #5a4630;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .reward-modal2-img {
+            width: 300px;
+            height: auto;
+            margin-bottom: 25px;
+        }
+
+        .reward-modal2-desc {
+            font-size: 16px;
+            color: #5a4630;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .reward-modal2-next-btn {
+
+            font-size: 16px;
+            color: #5a4630;
+            cursor: pointer;
+            text-align: right;
+            margin-right: 10px;
+        }
+
+        .reward-modal2-arrow {
+            font-size: 18px;
+            margin-left: 5px;
+        }
+
+        .reward-modal2-next-btn:hover {
+            color: #8a735a;
+            /* background-color: #f0e6d6;
+            transform: translateX(5px); */
+        }
+
+        .characterPhotoTopDiv {
+            width: 100%;
+            height: 53%;
+            display: flex;
+            justify-content: center;
+            align-content: center;
+        }
+
+        .characterPhoto {
+            width: 400px;
+            height: auto;
+            position: absolute;
+            transform: translate(-50%, 100px);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 背景图容器 -->
+    <div class="bg-container" id="bgContainer">
+        <!-- 右上角音乐图标 -->
+        <div class="music-icon" id="musicIcon" ></div>
+
+        <!-- 隐藏的音频播放器 -->
+        <audio id="audioPlayer" src="Auidos/剧情音乐.MP3" loop></audio>
+
+        <!-- 文字显示框 -->
+        <!-- 文字显示框 -->
+        <img class="textFrame" src="Images/PageFifteenImages/texFrame.png" />
+        <div class="text-box">
+            <div class="text-content" id="textContent"></div>
+
+
+
+            <img id="RightDiv" src="Images\ModelPageImages\RightBT.png"
+                style="position: absolute; bottom: 5%; right: 5%;display: none; " onclick="openPopup()" />
+        </div>
+
+    </div>
+
+    <!-- 第一个模态框 - 扫尘互动 -->
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
+        <div class="modal-content" id="modalContent">
+            <span class="close-btn" onclick="closePopup()">&times;</span>
+
+            <!-- 提示文字 - 改为h1标签 -->
+            <h1 class="instruction-title">拖动刷子 清扫尘土</h1>
+
+            <div class="characterPhotoTopDiv">
+                <img class="characterPhoto" src="Images/PageEightImages/PhotoMan.png"
+                    style="width: 40% ;transform:translate(0,20px)" />
+            </div>
+
+            <!-- 掸子/扫把 -->
+            <div class="broom" id="broom"></div>
+
+            <!-- 灰尘元素将由JavaScript在固定位置生成 -->
+
+            <img id="RightDiv2" src="Images\ModelPageImages\RightBT.png"
+                style="position: absolute; bottom: 5%; right: 5%;display: none; " onclick="openPopup2()" />
+
+        </div>
+    </div>
+
+    <!-- 第二个模态框 - 奖励 -->
+    <div class="reward-modal2-overlay" id="modalOverlay2" onclick="closeModalOnOverlay2(event)">
+        <div class="reward-modal2-content">
+            <!-- 关闭按钮 × -->
+            <span class="reward-modal2-close" onclick="closePopup2()">&times;</span>
+
+            <!-- 标题 -->
+            <div class="reward-modal2-title">获得奖励</div>
+
+            <!-- 核心图片（路径保持不变） -->
+            <img class="reward-modal2-img" src="Images/shouchuan/A4.png" />
+
+            <!-- 说明文字 -->
+            <div class="reward-modal2-desc">
+                获得小簪子一个，集齐五个奖励可兑换实物，线下到昆曲博物馆参观向工作人员出示即可。
+            </div>
+
+            <!-- 下一页按钮 -->
+            <div class="reward-modal2-next-btn" onclick="handleNextPage2()">
+                点击下一页 <span class="reward-modal2-arrow">▶</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== 1. 背景图缓慢渐显 ==========
+        const bgContainer = document.getElementById('bgContainer');
+        window.addEventListener('load', () => {
+            bgContainer.classList.add('show');
+            startTypewriter();
+        });
+
+        // ========== 2. 文字逐字出现 ==========
+        const textContent = document.getElementById('textContent');
+        const targetText = `柳梦梅奔赴长安途中感染寒疾，又在渡河时落水，被陈最良所救，暂居梅花观。他在梅花观中养病，闷坐难消遣，有人告诉他，这有座花园可以散闷。柳梦梅到这个花园散心的时候，捡到了杜丽娘的画像，发现是自己所梦之人，便将画拿回院中，常常欣赏，希望再次梦见画中女子。`;
+        let charIndex = 0;
+        const typeSpeed = 120;
+
+        function startTypewriter() {
+            if (charIndex < targetText.length) {
+                textContent.textContent += targetText.charAt(charIndex);
+                charIndex++;
+                setTimeout(startTypewriter, typeSpeed);
+            } else {
+                let rightDiv = document.getElementById('RightDiv');
+                rightDiv.style.display = 'block';
+            }
+        }
+
+        // ========== 3. 右上角图标点击播放/暂停音乐 ==========
+        const musicIcon = document.getElementById('musicIcon');
+        const audioPlayer = document.getElementById('audioPlayer');
+        let isMusicPlaying = false;
+
+        musicIcon.addEventListener('click', () => {
+            if (isMusicPlaying) {
+                audioPlayer.pause();
+            } else {
+                audioPlayer.play();
+            }
+            isMusicPlaying = !isMusicPlaying;
+        });
+
+        const modalOverlay = document.getElementById('modalOverlay');
+
+        function openPopup() {
+            modalOverlay.style.display = 'flex';
+            // 初始化扫把和灰尘
+            setTimeout(initBroomAndDust, 100);
+        }
+
+        function closePopup() {
+            modalOverlay.style.display = 'none';
+        }
+
+        function closeModalOnOverlay(event) {
+            if (event.target === modalOverlay) {
+                closePopup();
+            }
+        }
+
+        // ========== 掸子/扫把和灰尘功能 ==========
+        let broom = null;
+        let dustElements = [];
+        let isDragging = false;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+
+        // 五个灰尘图片路径数组
+        const dustImages = [
+            'Images/newPageNineImages/huichen1.png',
+            'Images/newPageNineImages/huichen2.png',
+            'Images/newPageNineImages/huichen3.png',
+            'Images/newPageNineImages/huichen4.png',
+            'Images/newPageNineImages/huichen5.png'
+        ];
+
+        function initBroomAndDust() {
+            const modalContent = document.getElementById('modalContent');
+
+            // 创建掸子/扫把
+            broom = document.getElementById('broom');
+            if (!broom) {
+                broom = document.createElement('div');
+                broom.id = 'broom';
+                broom.className = 'broom';
+                modalContent.appendChild(broom);
+            }
+
+            // 设置掸子/扫把初始位置（在右侧，如图片所示）
+            broom.style.left = '900px';
+            broom.style.top = '300px';
+
+            // 移除所有现有的灰尘元素
+            const existingDust = document.querySelectorAll('.dust');
+            existingDust.forEach(dust => dust.remove());
+
+            // 创建5个固定位置的灰尘元素（上下左右中）
+            dustElements = [];
+
+            // 定义五个固定位置（基于模态框的百分比）并分配不同的灰尘图片
+            const dustPositions = [
+                { name: '上', left: '40%', top: '30%', imageIndex: 0 },
+                { name: '下', left: '44%', top: '70%', imageIndex: 1 },
+                { name: '左', left: '44.8%', top: '48%', imageIndex: 2 },
+                { name: '右', left: '60%', top: '30%', imageIndex: 3 },
+                { name: '中', left: '60%', top: '70%', imageIndex: 4 }
+            ];
+
+            for (let i = 0; i < dustPositions.length; i++) {
+                const pos = dustPositions[i];
+                const dust = document.createElement('div');
+                dust.className = 'dust';
+                dust.id = `dust-${pos.name}`;
+
+                // 设置不同的灰尘图片
+                dust.style.backgroundImage = `url('${dustImages[pos.imageIndex]}')`;
+
+                // 设置固定位置
+                dust.style.left = pos.left;
+                dust.style.top = pos.top;
+                dust.style.transform = 'translate(-50%, -50%)'; // 居中
+
+                // 随机旋转角度
+                dust.style.transform += ` rotate(${Math.random() * 360}deg)`;
+
+                modalContent.appendChild(dust);
+                dustElements.push(dust);
+            }
+
+            // 添加掸子/扫把拖动事件
+            setupBroomDrag();
+        }
+
+        function setupBroomDrag() {
+            broom.addEventListener('mousedown', startDrag);
+            broom.addEventListener('touchstart', startDragTouch);
+
+            // 鼠标事件
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', stopDrag);
+
+            // 触摸事件
+            document.addEventListener('touchmove', dragTouch);
+            document.addEventListener('touchend', stopDrag);
+        }
+
+        function startDrag(e) {
+            isDragging = true;
+            const rect = broom.getBoundingClientRect();
+            dragOffsetX = e.clientX - rect.left;
+            dragOffsetY = e.clientY - rect.top;
+            e.preventDefault();
+        }
+
+        function startDragTouch(e) {
+            isDragging = true;
+            const touch = e.touches[0];
+            const rect = broom.getBoundingClientRect();
+            dragOffsetX = touch.clientX - rect.left;
+            dragOffsetY = touch.clientY - rect.top;
+            e.preventDefault();
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+
+            const modalRect = document.querySelector('.modal-content').getBoundingClientRect();
+            const broomWidth = broom.offsetWidth;
+            const broomHeight = broom.offsetHeight;
+
+            let newX = e.clientX - modalRect.left - dragOffsetX;
+            let newY = e.clientY - modalRect.top - dragOffsetY;
+
+            // 限制掸子/扫把在模态框内移动
+            newX = Math.max(0, Math.min(newX, modalRect.width - broomWidth));
+            newY = Math.max(0, Math.min(newY, modalRect.height - broomHeight));
+
+            broom.style.left = `${newX}px`;
+            broom.style.top = `${newY}px`;
+
+            // 检查是否碰到灰尘
+            checkDustCollision(newX, newY, broomWidth, broomHeight);
+        }
+
+        function dragTouch(e) {
+            if (!isDragging) return;
+
+            const touch = e.touches[0];
+            const modalRect = document.querySelector('.modal-content').getBoundingClientRect();
+            const broomWidth = broom.offsetWidth;
+            const broomHeight = broom.offsetHeight;
+
+            let newX = touch.clientX - modalRect.left - dragOffsetX;
+            let newY = touch.clientY - modalRect.top - dragOffsetY;
+
+            // 限制掸子/扫把在模态框内移动
+            newX = Math.max(0, Math.min(newX, modalRect.width - broomWidth));
+            newY = Math.max(0, Math.min(newY, modalRect.height - broomHeight));
+
+            broom.style.left = `${newX}px`;
+            broom.style.top = `${newY}px`;
+
+            // 检查是否碰到灰尘
+            checkDustCollision(newX, newY, broomWidth, broomHeight);
+        }
+
+        function stopDrag() {
+            isDragging = false;
+        }
+
+        function checkDustCollision(broomX, broomY, broomWidth, broomHeight) {
+            const broomRect = {
+                left: broomX,
+                right: broomX + broomWidth,
+                top: broomY,
+                bottom: broomY + broomHeight
+            };
+
+            dustElements.forEach((dust, index) => {
+                if (!dust || dust.style.display === 'none') return;
+
+                const dustRect = dust.getBoundingClientRect();
+                const modalRect = document.querySelector('.modal-content').getBoundingClientRect();
+
+                const dustAbsRect = {
+                    left: dustRect.left - modalRect.left,
+                    right: dustRect.right - modalRect.left,
+                    top: dustRect.top - modalRect.top,
+                    bottom: dustRect.bottom - modalRect.top
+                };
+
+                // 简单的矩形碰撞检测
+                if (broomRect.left < dustAbsRect.right &&
+                    broomRect.right > dustAbsRect.left &&
+                    broomRect.top < dustAbsRect.bottom &&
+                    broomRect.bottom > dustAbsRect.top) {
+
+                    // 清除灰尘
+                    clearDust(dust, index);
+                }
+            });
+        }
+
+        function clearDust(dustElement, index) {
+            // 添加消失动画
+            dustElement.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            dustElement.style.opacity = '0';
+            dustElement.style.transform = dustElement.style.transform.replace(/rotate\([^)]+\)/, '') + ' scale(0) rotate(180deg)';
+
+            // 0.5秒后隐藏元素
+            setTimeout(() => {
+                dustElement.style.display = 'none';
+                dustElements[index] = null;
+
+                // 检查是否所有灰尘都已清除
+                checkAllDustCleared();
+            }, 500);
+        }
+
+        function checkAllDustCleared() {
+            const remainingDust = dustElements.filter(dust => dust && dust.style.display !== 'none');
+
+            if (remainingDust.length === 0) {
+                // 所有灰尘已清除，显示奖励
+                setTimeout(() => {
+                    let rightDiv2 = document.getElementById('RightDiv2');
+                    rightDiv2.style.display = 'block';
+                }, 800);
+            }
+        }
+
+        // ========== 第二个模态框相关函数 ==========
+        function openPopup2() {
+            document.getElementById("modalOverlay2").style.display = 'flex';
+        }
+
+        function closePopup2() {
+            document.getElementById("modalOverlay2").style.display = "none";
+        }
+
+        function closeModalOnOverlay2(event) {
+            if (event.target === document.getElementById("modalOverlay2")) {
+                closePopup2();
+            }
+        }
+
+        function handleNextPage2() {
+            closePopup2();
+            // 这里可以添加跳转到下一页的代码
+            window.location.href = "newPageTen.html";
+        }
+    </script>
+</body>
+
+</html>

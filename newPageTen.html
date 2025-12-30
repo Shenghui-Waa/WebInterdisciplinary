@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新第10页</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            overflow: hidden;
+            font-family: "微软雅黑", "宋体", serif;
+        }
+
+        /* 背景图容器：缓慢渐显 */
+        .bg-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("Images/PageFifteenImages/background10.png") no-repeat center center;
+            background-size: 95% auto;
+            opacity: 0;
+            transition: opacity 4s ease;
+            z-index: 1;
+        }
+
+        /* 背景渐显触发类 */
+        .bg-container.show {
+            opacity: 1;
+        }
+
+        /* 右上角音乐图标 */
+        .music-icon {
+            position: fixed;
+            top: 3vw;
+            right: 6vh;
+            width: 12vw;
+            height: 12vh;
+            background: url("Images/PageFifteenImages/music-icon.png") no-repeat center center;
+            background-size: contain;
+            cursor: pointer;
+            z-index: 3;
+            transition: transform 0.3s ease;
+        }
+
+        .music-icon:hover {
+            transform: scale(1.1);
+        }
+
+        #RightDiv:hover {
+            transform: scale(1.1);
+            cursor: pointer;
+        }
+
+        /* 文字框样式 */
+        .text-box {
+            position: fixed;
+            bottom: 15vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            max-width: 900px;
+            padding: 25px;
+            font-size: 19px;
+            line-height: 1.8;
+            color: #4a3b28;
+            z-index: 2;
+        }
+
+        .textFrame {
+            position: fixed;
+            bottom: 3vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            color: #4a3b28;
+            z-index: 2;
+            opacity: 0.8;
+        }
+
+        .text-content {
+            white-space: pre-line;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 弹框内容框 */
+        .modal-content {
+            background-image: url("Images/ModelPageImages/downBG.png");
+            background-size: cover;
+            padding: 30px;
+            border-radius: 8px;
+            width: 1200px;
+            height: 675.6px;
+            max-width: 90%;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 100px;
+            cursor: pointer;
+            color: #aaa;
+            z-index: 10;
+        }
+
+        .close-btn:hover {
+            color: #000;
+        }
+
+        /* 拖拽换装游戏样式 */
+        .dressing-game {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 85%;
+            padding: 20px;
+        }
+
+        .drag-area {
+            width: 35%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .drag-item {
+            width: 130px;
+            height: 220px;
+            cursor: grab;
+            transition: transform 0.3s ease;
+            border: 3px dashed transparent;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .drag-item:hover {
+            transform: scale(1.05);
+            border-color: #8a735a;
+        }
+
+        .drag-item.dragging {
+            opacity: 0.7;
+            transform: scale(0.95);
+            border-color: #ff6b6b;
+        }
+
+        .drag-instruction {
+            color: #5a4630;
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .drop-area {
+            width: 50%;
+            display: flex;
+            
+            align-items: center;
+            justify-content: center;
+            gap: 40px;
+            position: relative;
+        }
+
+        .drop-target {
+            width: 200px;
+            height: 250px;
+            border: 3px dashed #8a735a;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background-color: rgba(245, 240, 232, 0.7);
+            transition: all 0.3s ease;
+        }
+
+        .drop-target.hover {
+            border-color: #ff6b6b;
+            background-color: rgba(255, 107, 107, 0.1);
+            transform: scale(1.02);
+        }
+
+        .drop-target.success {
+            border-color: #4CAF50;
+            border-style: solid;
+            background-color: rgba(76, 175, 80, 0.1);
+        }
+
+        .character {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .character-label {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #5a4630;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .game-title {
+            text-align: center;
+            font-size: 24px;
+            color: #5a4630;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .completion-message {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #5a4630;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .completion-message.show {
+            opacity: 1;
+        }
+
+        /* 第二个模态框样式 */
+        .reward-modal2-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .reward-modal2-content {
+            position: relative;
+            background: #f5f0e8;
+            border: 2px solid #8a735a;
+            border-radius: 8px;
+            padding: 40px 60px;
+            max-width: 600px;
+            text-align: center;
+            font-family: "SimSun", "宋体", serif;
+        }
+
+        .reward-modal2-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #8a735a;
+        }
+
+        .reward-modal2-close:hover {
+            color: #5a4630;
+        }
+
+        .reward-modal2-title {
+            font-size: 28px;
+            color: #5a4630;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .reward-modal2-img {
+            width: 300px;
+            height: auto;
+            margin-bottom: 25px;
+        }
+
+        .reward-modal2-desc {
+            font-size: 16px;
+            color: #5a4630;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .reward-modal2-next-btn {
+            font-size: 16px;
+            color: #5a4630;
+            cursor: pointer;
+            text-align: right;
+            margin-right: 10px;
+        }
+
+        .reward-modal2-arrow {
+            font-size: 18px;
+            margin-left: 5px;
+        }
+
+        .reward-modal2-next-btn:hover {
+            color: #8a735a;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 背景图容器 -->
+    <div class="bg-container" id="bgContainer">
+        <!-- 右上角音乐图标 -->
+        <div class="music-icon" id="musicIcon" ></div>
+
+        <!-- 隐藏的音频播放器（播放本地音乐） -->
+        <audio id="audioPlayer" src="Auidos/剧情音乐.MP3" loop></audio>
+
+        <!-- 文字显示框 -->
+        <img class="textFrame" src="Images/PageFifteenImages/texFrame.png" />
+        <div class="text-box">
+            <div class="text-content" id="textContent"></div>
+            <img id="RightDiv" src="Images\ModelPageImages\RightBT.png"
+                style="position: absolute; bottom: 5%; right: 5%;display: none; " onclick="openPopup()" />
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnOverlay(event)">
+        <div class="modal-content">
+            <!-- 关闭按钮 × -->
+            <span class="close-btn" onclick="closePopup()">&times;</span>
+            
+            <!-- 拖拽换装游戏 -->
+            <div class="game-title">拖动喜服完成换装</div>
+            
+            <div class="dressing-game">
+                <!-- 左侧：可拖拽的衣服 -->
+                <div class="drag-area">
+                    <div class="drag-instruction">拖动到对应角色上</div>
+                    <img src="Images/newPageTenImages/red1.png" class="drag-item" id="dragRed1" draggable="true">
+                    <img src="Images/newPageTenImages/red2.png" class="drag-item" id="dragRed2" draggable="true">
+                </div>
+                
+                <!-- 右侧：放置目标 -->
+                <div class="drop-area">
+                    <div class="drop-target" id="dropWoman">
+                        <img src="Images/newPageTenImages/woman.png" class="character" id="womanChar">
+                        <div class="character-label">杜丽娘</div>
+                    </div>
+                    <div class="drop-target" id="dropMan">
+                        <img src="Images/newPageTenImages/man.png" class="character" id="manChar">
+                        <div class="character-label">柳梦梅</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 完成提示 -->
+            <div class="completion-message" id="completionMessage">
+                换装完成！<br>点击下一页继续
+            </div>
+            
+            <!-- 下一页按钮（初始隐藏） -->
+            <img id="RightDiv2" src="Images\ModelPageImages\RightBT.png"
+                style="position: absolute; bottom: 5%; right: 5%;display: none; " onclick="openPopup2()" />
+        </div>
+    </div>
+
+    <!-- 第二个模态框 -->
+    <div class="reward-modal2-overlay" id="modalOverlay2" onclick="closeModalOnOverlay2(event)">
+        <div class="reward-modal2-content">
+            <!-- 关闭按钮 × -->
+            <span class="reward-modal2-close" onclick="closePopup2()">&times;</span>
+
+            <!-- 标题 -->
+            <div class="reward-modal2-title">获得奖励</div>
+
+            <!-- 核心图片（路径保持不变） -->
+            <img class="reward-modal2-img" src="Images/shouchuan/A5.png" />
+
+            <!-- 说明文字 -->
+            <div class="reward-modal2-desc">
+                获得小香囊一个，集齐五个奖励可兑换实物，线下到昆曲博物馆参观向工作人员出示即可。
+            </div>
+
+            <!-- 下一页按钮 -->
+            <div class="reward-modal2-next-btn" onclick="handleNextPage2()">
+                点击下一页 <span class="reward-modal2-arrow">▶</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== 1. 背景图缓慢渐显 ==========
+        const bgContainer = document.getElementById('bgContainer');
+        // 页面加载完成后触发背景渐显
+        window.addEventListener('load', () => {
+            bgContainer.classList.add('show');
+            // 背景开始渐显的同时，启动文字逐字显示
+            startTypewriter();
+        });
+
+        // ========== 2. 文字逐字出现 ==========
+        const textContent = document.getElementById('textContent');
+        // 要显示的文本内容（可直接替换）
+        const targetText = `夜半，鬼魂杜丽娘因为自画像被拾到来找柳梦梅，柳梦梅见到梦中女子，两人情谊渐起，在相处中，柳梦梅告知杜丽娘，他想要与杜丽娘结发为夫妻，杜丽娘也告诉了柳梦梅自己其实是鬼的真相。`;
+        let charIndex = 0; // 文字索引
+        const typeSpeed = 120; // 每个字的显示间隔（毫秒），数值越小越快
+
+        // 逐字显示核心函数
+        function startTypewriter() {
+            if (charIndex < targetText.length) {
+                // 追加当前字符到文本容器
+                textContent.textContent += targetText.charAt(charIndex);
+                charIndex++;
+                // 递归调用，实现逐字效果
+                setTimeout(startTypewriter, typeSpeed);
+            } else {
+                let rightDiv = document.getElementById('RightDiv');
+                rightDiv.style.display = 'block';
+            }
+        }
+
+        // ========== 3. 右上角图标点击播放/暂停音乐 ==========
+        const musicIcon = document.getElementById('musicIcon');
+        const audioPlayer = document.getElementById('audioPlayer');
+        let isMusicPlaying = false; // 音乐播放状态标记
+
+        musicIcon.addEventListener('click', () => {
+            if (isMusicPlaying) {
+                audioPlayer.pause(); // 暂停音乐
+            } else {
+                audioPlayer.play(); // 播放音乐
+            }
+            isMusicPlaying = !isMusicPlaying; // 切换状态
+        });
+
+        const modalOverlay = document.getElementById('modalOverlay');
+
+        function openPopup() {
+            modalOverlay.style.display = 'flex';
+        }
+
+        function closePopup() {
+            modalOverlay.style.display = 'none';
+        }
+
+        function closeModalOnOverlay(event) {
+            if (event.target === modalOverlay) {
+                closePopup();
+            }
+        }
+
+        // ========== 4. 拖拽换装游戏逻辑 ==========
+        let completedCount = 0;
+        
+        // 获取所有可拖拽元素
+        const dragItems = document.querySelectorAll('.drag-item');
+        
+        // 获取所有放置目标
+        const dropTargets = document.querySelectorAll('.drop-target');
+        
+        // 获取完成提示和下一页按钮
+        const completionMessage = document.getElementById('completionMessage');
+        const rightDiv2 = document.getElementById('RightDiv2');
+        
+        // 存储原始角色图片
+        const originalWomanImg = "Images/newPageTenImages/woman.png";
+        const originalManImg = "Images/newPageTenImages/man.png";
+        
+        // 存储喜服图片
+        const red1Img = "Images/newPageTenImages/red1.png";
+        const red2Img = "Images/newPageTenImages/red2.png";
+        
+        // 为每个可拖拽元素添加事件监听器
+        dragItems.forEach(item => {
+            item.addEventListener('dragstart', handleDragStart);
+            item.addEventListener('dragend', handleDragEnd);
+        });
+        
+        // 为每个放置目标添加事件监听器
+        dropTargets.forEach(target => {
+            target.addEventListener('dragover', handleDragOver);
+            target.addEventListener('dragenter', handleDragEnter);
+            target.addEventListener('dragleave', handleDragLeave);
+            target.addEventListener('drop', handleDrop);
+        });
+        
+        // 拖拽开始事件处理
+        function handleDragStart(e) {
+            e.dataTransfer.setData('text/plain', e.target.id);
+            e.target.classList.add('dragging');
+            
+            // 设置拖拽图像
+            const rect = e.target.getBoundingClientRect();
+            const offsetX = e.clientX - rect.left;
+            const offsetY = e.clientY - rect.top;
+            
+            // 创建一个临时图像用于拖拽预览
+            const dragImage = e.target.cloneNode();
+            dragImage.style.width = '100px';
+            dragImage.style.height = '120px';
+            document.body.appendChild(dragImage);
+            e.dataTransfer.setDragImage(dragImage, offsetX * (100/rect.width), offsetY * (120/rect.height));
+            
+            // 移除临时图像
+            setTimeout(() => {
+                document.body.removeChild(dragImage);
+            }, 0);
+        }
+        
+        // 拖拽结束事件处理
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+        }
+        
+        // 拖拽悬停事件处理
+        function handleDragOver(e) {
+            e.preventDefault();
+        }
+        
+        // 拖拽进入放置目标事件处理
+        function handleDragEnter(e) {
+            e.preventDefault();
+            e.target.closest('.drop-target').classList.add('hover');
+        }
+        
+        // 拖拽离开放置目标事件处理
+        function handleDragLeave(e) {
+            e.target.closest('.drop-target').classList.remove('hover');
+        }
+        
+        // 放置事件处理
+        function handleDrop(e) {
+            e.preventDefault();
+            const dropTarget = e.target.closest('.drop-target');
+            dropTarget.classList.remove('hover');
+            
+            const dragItemId = e.dataTransfer.getData('text/plain');
+            const dragItem = document.getElementById(dragItemId);
+            
+            // 检查是否是正确的匹配
+            const isCorrectMatch = checkMatch(dragItemId, dropTarget.id);
+            
+            if (isCorrectMatch) {
+                // 正确匹配：替换角色图片为喜服
+                if (dropTarget.id === 'dropWoman') {
+                    document.getElementById('womanChar').src = "Images/newPageTenImages/redwoman.png";
+                    // 隐藏拖拽元素
+                    dragItem.style.visibility = 'hidden';
+                    dropTarget.classList.add('success');
+                    completedCount++;
+                } else if (dropTarget.id === 'dropMan') {
+                    document.getElementById('manChar').src = "Images/newPageTenImages/redman.png";
+                    // 隐藏拖拽元素
+                    dragItem.style.visibility = 'hidden';
+                    dropTarget.classList.add('success');
+                    completedCount++;
+                }
+                
+                // 检查是否全部完成
+                if (completedCount === 2) {
+                    // 显示完成提示
+                    setTimeout(() => {
+                        completionMessage.classList.add('show');
+                    }, 500);
+                    
+                    // 显示下一页按钮
+                    setTimeout(() => {
+                        rightDiv2.style.display = 'block';
+                    }, 1500);
+                }
+            } else {
+                // 错误匹配：显示提示
+                alert('请将喜服拖到对应的角色上！');
+            }
+        }
+        
+        // 检查拖拽元素和放置目标是否匹配
+        function checkMatch(dragItemId, dropTargetId) {
+            // red1 对应 woman, red2 对应 man
+            if (dragItemId === 'dragRed1' && dropTargetId === 'dropWoman') {
+                return true;
+            } else if (dragItemId === 'dragRed2' && dropTargetId === 'dropMan') {
+                return true;
+            }
+            return false;
+        }
+        
+        // ========== 5. 第二个模态框相关函数 ==========
+        function openPopup2() {
+            document.getElementById("modalOverlay2").style.display = 'flex';
+        }
+        
+        function closePopup2() {
+            document.getElementById("modalOverlay2").style.display = "none";
+        }
+        
+        function closeModalOnOverlay2(event) {
+            if (event.target === document.getElementById("modalOverlay2")) {
+                closePopup2();
+            }
+        }
+        
+        function handleNextPage2() {
+            window.location.href = "newPageEleven.html";
+            closePopup2();
+        }
+    </script>
+
+</body>
+
+</html>
